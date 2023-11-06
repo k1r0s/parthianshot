@@ -20,12 +20,14 @@ public abstract class MountedEntity extends LivingEntity {
 	}
 
 	public void setRotation(float yaw, float pitch) {
-		if (((Entity)(Object)this).getControllingPassenger() instanceof PlayerEntity ridder && ridder.getMainHandStack().getItem() == Items.LEAD) {
-	        double d = 0.2;
-	        float h = (float)MathHelper.lerpAngleDegrees(d, (double)this.getYaw(), ridder.getYaw());
-	        float i = (float)MathHelper.lerp(d, (double)this.getPitch(), ridder.getPitch());
-			this.setYaw(h % 360.0f);
-	        this.setPitch(i % 360.0f);
+		if (((Entity)(Object)this).getControllingPassenger() instanceof PlayerEntity ridder) {
+			if (ridder.getMainHandStack().getItem() == Items.LEAD) {
+				double d = 0.2; // IDEA: this factor might be breed dependent 
+		        float h = (float)MathHelper.lerpAngleDegrees(d, (double)this.getYaw(), ridder.getYaw());
+		        float i = (float)MathHelper.lerp(d, (double)this.getPitch(), ridder.getPitch());
+				this.setYaw(h % 360.0f);
+		        this.setPitch(i % 360.0f);	
+			}
 		} else {
 			super.setRotation(yaw, pitch);
 		}
