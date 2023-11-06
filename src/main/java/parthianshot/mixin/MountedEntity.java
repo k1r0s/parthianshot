@@ -1,20 +1,33 @@
 package parthianshot.mixin;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(Entity.class)
-public abstract class MountedEntity {
-	@Inject(method = "setRotation", at = @At("HEAD"), cancellable = true)
-	public void beforeSetRotation(float yaw, float pitch, CallbackInfo ci) {		
-		if (((Entity)(Object)this).getControllingPassenger() instanceof PlayerEntity ridder && ridder.getMainHandStack().getItem() != Items.LEAD) {
-			ci.cancel();
+@Mixin(AbstractHorseEntity.class)
+public abstract class MountedEntity extends LivingEntity {
+	
+	protected MountedEntity(EntityType<? extends LivingEntity> entityType, World world) {
+		super(entityType, world);
+		// TODO Auto-generated constructor stub
+	}
+
+	public void setRotation(float yaw, float pitch) {
+		if (((Entity)(Object)this).getControllingPassenger() instanceof PlayerEntity ridder && ridder.getMainHandStack().getItem() == Items.LEAD) {
+	        double d = 0.2;
+	        float h = (float)MathHelper.lerpAngleDegrees(d, (double)this.getYaw(), ridder.getYaw());
+	        float i = (float)MathHelper.lerp(d, (double)this.getPitch(), ridder.getPitch());
+			this.setYaw(h % 360.0f);
+	        this.setPitch(i % 360.0f);
+		} else {
+			super.setRotation(yaw, pitch);
 		}
 	}
 }
